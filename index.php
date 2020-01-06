@@ -178,7 +178,7 @@
     </div>
 </body>
 </html>
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="./vue.js"></script>
 <script>
     Vue.component('todo-item', {
         template: '\
