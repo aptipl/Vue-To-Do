@@ -170,9 +170,9 @@
                 is="todo-item"
                 v-for="(todo, index) in todos"
                 v-bind:key="todo.id"
-                v-bind:title="todo.title"
+                v-bind:title="(index + 1) + '.  ' + todo.title"
                 v-bind:class="{ checked : todo.completed }"
-                v-on:comepleteTask="{ todo.id }"
+                v-on:delete="{todos.splice(index, 1)}"
             ></li>
         </ul>
     </div>
@@ -184,7 +184,7 @@
         template: '\
     <li>\
       {{ title }}\
-      <span class="close" v-on:click="$emit(\'comepleteTask\')">x</span>\
+      <span class="close" title="Delete" v-on:click="$emit(\'delete\')">x</span>\
     </li>\
   ',
         props: ['title']
