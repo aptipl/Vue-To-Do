@@ -110,6 +110,61 @@
             float: left;
             font-size: 16px;
         }
+
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            height: 25px;
+            width: 25px;
+            background-color: #eee;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .container:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .container input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the checkmark when checked */
+        .container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Style the checkmark/indicator */
+        .container .checkmark:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
         .list-title{
             padding: 10px;
             width: 33.33%;
@@ -172,7 +227,8 @@
                 v-bind:key="todo.id"
                 v-bind:title="(index + 1) + '.  ' + todo.title"
                 v-bind:class="{ checked : todo.completed }"
-                v-on:delete="{todos.splice(index, 1)}"
+                v-on:complete="comepleteTask(todo.id)"
+                v-on:delete="todos.splice(index, 1)"
             ></li>
         </ul>
     </div>
@@ -183,7 +239,8 @@
     Vue.component('todo-item', {
         template: '\
     <li>\
-      {{ title }}\
+        <label class="container"><input type="checkbox" v-on:click="$emit(\'complete\')" /><span class="checkmark"></span>\
+      {{ title }}</label>\
       <span class="close" title="Delete" v-on:click="$emit(\'delete\')">x</span>\
     </li>\
   ',
@@ -221,7 +278,12 @@
                 this.newTodoText = ''
             },
             comepleteTask: function (id) {
-                alert(id);
+                this.todos.forEach((value, index) => {
+                   if(value.id == id){
+                       alert(index);
+                       this.todos[index].completed = value.completed ? false : true;
+                   }
+                });
             }
         }
     })
