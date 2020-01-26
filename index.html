@@ -216,9 +216,9 @@
             </form>
         </div>
         <div class="selector">
-            <span class="list-title active">All Tasks</span>
-            <span class="list-title">Pending Tasks</span>
-            <span class="list-title">Completed Tasks</span>
+            <span class="list-title active" v-on:click="changeList('All')">All Tasks</span>
+            <span class="list-title" v-on:click="changeList('Pending')">Pending Tasks</span>
+            <span class="list-title" v-on:click="changeList('Completed')">Completed Tasks</span>
         </div>
         <ul class="list">
             <li
@@ -229,6 +229,7 @@
                 v-bind:class="{ checked : todo.completed }"
                 v-on:complete="comepleteTask(todo.id)"
                 v-on:delete="todos.splice(index, 1)"
+                v-if="showList == 'All' || (showList == 'Completed' && todo.completed) || (showList == 'Pending' && !todo.completed)"
             ></li>
         </ul>
     </div>
@@ -250,6 +251,7 @@
         el: '#app',
         data: {
             newTodoText: '',
+            showList: 'Pending',
             todos: [
                 {
                     id: 1,
@@ -284,6 +286,9 @@
                        this.todos[index].completed = value.completed ? false : true;
                    }
                 });
+            },
+            changeList: function (value) {
+                this.showList = value;
             }
         }
     })
