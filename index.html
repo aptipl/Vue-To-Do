@@ -210,43 +210,29 @@
     <div id="app">
         <div class="header">
             <h2 style="margin:5px">My To Do List</h2>
-            <form v-on:submit.prevent="addNewTodo">
+            <form @submit.prevent="addNewTodo">
                 <input  v-model="newTodoText" type="text" id="new-todo" placeholder="Title...">
                 <input type="submit" class="addBtn" value="Add a todo">
             </form>
         </div>
         <div class="selector">
-            <span class="list-title active" v-on:click="changeList('All')">All Tasks</span>
-            <span class="list-title" v-on:click="changeList('Pending')">Pending Tasks</span>
-            <span class="list-title" v-on:click="changeList('Completed')">Completed Tasks</span>
+            <span class="list-title" :class="{active : showList == 'All'}" @click="changeList('All')">All Tasks</span>
+            <span class="list-title" :class="{active : showList == 'Pending'}" @click="changeList('Pending')">Pending Tasks</span>
+            <span class="list-title" :class="{active : showList == 'Completed'}" @click="changeList('Completed')">Completed Tasks</span>
         </div>
         <ul class="list">
-            <li
-                is="todo-item"
-                v-for="(todo, index) in todos"
-                v-bind:key="todo.id"
-                v-bind:title="(index + 1) + '.  ' + todo.title"
-                v-bind:class="{ checked : todo.completed }"
-                v-on:complete="comepleteTask(todo.id)"
-                v-on:delete="todos.splice(index, 1)"
-                v-if="showList == 'All' || (showList == 'Completed' && todo.completed) || (showList == 'Pending' && !todo.completed)"
-            ></li>
+            <li v-for="(todo, index) in todos" :key="todo.id" :class="{ checked : todo.completed }" v-if="showList == 'All' || (showList == 'Completed' && todo.completed) || (showList == 'Pending' && !todo.completed)" >
+                <label class="container"><input type="checkbox" @click="comepleteTask(index)"  :checked="todo.completed" />
+                    <span class="checkmark"></span>{{ (index + 1) + '.  ' + todo.title }}
+                </label>
+                <span class="close" title="Delete" @click="todos.splice(index, 1)">x</span>
+            </li>
         </ul>
     </div>
 </body>
 </html>
 <script src="./vue.js"></script>
 <script>
-    Vue.component('todo-item', {
-        template: '\
-    <li>\
-        <label class="container"><input type="checkbox" v-on:click="$emit(\'complete\')" /><span class="checkmark"></span>\
-      {{ title }}</label>\
-      <span class="close" title="Delete" v-on:click="$emit(\'delete\')">x</span>\
-    </li>\
-  ',
-        props: ['title']
-    })
     new Vue({
         el: '#app',
         data: {
@@ -277,15 +263,10 @@
                     id: this.nextTodoId++,
                     title: this.newTodoText
                 })
-                this.newTodoText = ''
+                this.newTodoText = '';
             },
-            comepleteTask: function (id) {
-                this.todos.forEach((value, index) => {
-                   if(value.id == id){
-                       alert(index);
-                       this.todos[index].completed = value.completed ? false : true;
-                   }
-                });
+            comepleteTask: function (index) {
+                this.todos[index].completed = this.todos[index].completed ? false : true;
             },
             changeList: function (value) {
                 this.showList = value;
