@@ -225,7 +225,7 @@
                 <label class="container"><input type="checkbox" @click="comepleteTask(index)"  :checked="todo.completed" />
                     <span class="checkmark"></span>{{ (index + 1) + '.  ' + todo.title }}
                 </label>
-                <span class="close" title="Delete" @click="todos.splice(index, 1)">x</span>
+                <span class="close" title="Delete" @click="deleteTask(index)">x</span>
             </li>
         </ul>
     </div>
@@ -270,6 +270,9 @@
             },
             changeList: function (value) {
                 this.showList = value;
+            },
+            deleteTask: function (index) {
+                this.todos.splice(index, 1);
             }
         }
     })
