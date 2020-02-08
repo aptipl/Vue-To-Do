@@ -221,11 +221,12 @@
             <span class="list-title" :class="{active : showList == 'Completed'}" @click="changeList('Completed')">Completed Tasks</span>
         </div>
         <ul class="list">
-            <li v-for="(todo, index) in todos" :key="todo.id" :class="{ checked : todo.completed }" v-if="showList == 'All' || (showList == 'Completed' && todo.completed) || (showList == 'Pending' && !todo.completed)" >
-                <label class="container"><input type="checkbox" @click="comepleteTask(index)"  :checked="todo.completed" />
+            <li v-for="(todo, index) in filteredTodos" :key="todo.id" :class="{ checked : todo.completed }">
+                <label class="container">
+                    <input type="checkbox" @click="comepleteTask(todo.id)"  :checked="todo.completed" />
                     <span class="checkmark"></span>{{ (index + 1) + '.  ' + todo.title }}
                 </label>
-                <span class="close" title="Delete" @click="deleteTask(index)">x</span>
+                <span class="close" title="Delete" @click="deleteTask(todo.id)">x</span>
             </li>
         </ul>
     </div>
@@ -257,22 +258,46 @@
             ],
             nextTodoId: 4
         },
+        computed: {
+            filteredTodos() {
+                if(this.showList == 'Completed'){
+                    return this.todos.filter(function (value) {
+                        return value.completed
+                    });
+                }else if(this.showList == 'Pending') {
+                    return this.todos.filter(function (value) {
+                        return !value.completed
+                    });
+                }
+                else {
+                    return this.todos;
+                }
+            }
+        },
         methods: {
-            addNewTodo: function () {
+            addNewTodo () {
                 this.todos.push({
                     id: this.nextTodoId++,
                     title: this.newTodoText
                 })
                 this.newTodoText = '';
             },
-            comepleteTask: function (index) {
-                this.todos[index].completed = this.todos[index].completed ? false : true;
+            comepleteTask (key) {
+                this.todos.forEach((todo, index) => {
+                    if(todo.id == key){
+                        this.todos[index].completed = this.todos[index].completed ? false : true;
+                    }
+                })
             },
-            changeList: function (value) {
+            changeList (value) {
                 this.showList = value;
             },
-            deleteTask: function (index) {
-                this.todos.splice(index, 1);
+            deleteTask (key) {
+                this.todos.forEach((todo, index) => {
+                    if(todo.id == key){
+                        this.todos.splice(index, 1);
+                    }
+                })
             }
         }
     })
